@@ -27,7 +27,7 @@ services:
       - mlops_e2e
 
   zenml-server:
-    image: zenmldocker/zenml-server:latest
+    image: zenmldocker/zenml-server:0.54.1
     ports:
       - "8080:8080"
     env_file:

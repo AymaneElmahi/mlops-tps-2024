@@ -73,6 +73,10 @@ class DataUploaderService:
             bucket_name (str): Name of the bucket where the dataset will be uploaded.
             data_source (HuggingFaceDataSource): HuggingFaceDataSource object to be uploaded.
         """
+        
+        # check encoding of the dataset
+        print(data_source.dataset_name)
+        
         hf_data_source = load_dataset(data_source.dataset_name)
 
         max_workers = 10
@@ -137,13 +141,13 @@ class DataUploaderService:
             metadata=metadata,
         )
 
-        json_path = f"{dataset_name}/annotations/{unique_id}.json"
-        item["litter"]["image_path"] = image_path
+        mask_path = f"{dataset_name}/annotations/{unique_id}.png"
+        # item["mask"]["image_path"] = image_path
 
-        self._upload_json(
+        self._upload_image(
             bucket_name=bucket_name,
-            json_path=json_path,
-            data=item["litter"],
+            image_path=mask_path,
+            data=item["mask"],
             metadata=metadata,
         )
 

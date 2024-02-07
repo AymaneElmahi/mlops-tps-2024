@@ -102,9 +102,26 @@ def data_source_list_initializer() -> DataSourceList:
     return DataSourceList(
         [
             HuggingFaceDataSource(
-                dataset_name="<fill-here>",
+                dataset_name="mattmdjaga/human_parsing_dataset",
                 label_map={
-                    # class_id: "<fill-here>",
+                    0: "Background",
+                    1: "Hat",
+                    2: "Hair",
+                    3: "Sunglasses",
+                    4: "Upper-clothes",
+                    5: "Skirt",
+                    6: "Pants",
+                    7: "Dress",
+                    8: "Belt",
+                    9: "Left-Shoe",
+                    10: "Right-Shoe",
+                    11: "Face",
+                    12: "Left-leg",
+                    13: "Right-leg",
+                    14: "Left-arm",
+                    15: "Right-arm",
+                    16: "Bag",
+                    17: "Scarf",
                 },
             )
         ]

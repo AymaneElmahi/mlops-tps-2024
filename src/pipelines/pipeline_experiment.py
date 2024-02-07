@@ -2,21 +2,21 @@ from omegaconf import OmegaConf
 from zenml import pipeline
 
 from src.config.settings import EXTRACTED_DATASETS_PATH, MLFLOW_EXPERIMENT_PIPELINE_NAME
-from src.steps.data.data_extractor import dataset_extractor
+# from src.steps.data.data_extractor import dataset_extractor
 from src.steps.data.datalake_initializers import (
     data_source_list_initializer,
     minio_client_initializer,
 )
-from src.steps.data.dataset_preparators import (
-    dataset_creator,
-    dataset_to_yolo_converter,
-)
-from src.steps.training.model_appraisers import model_appraiser
-from src.steps.training.model_evaluators import model_evaluator
-from src.steps.training.model_trainers import (
-    get_pre_trained_weights_path,
-    model_trainer,
-)
+# from src.steps.data.dataset_preparators import (
+#     dataset_creator,
+#     dataset_to_yolo_converter,
+# )
+# from src.steps.training.model_appraisers import model_appraiser
+# from src.steps.training.model_evaluators import model_evaluator
+# from src.steps.training.model_trainers import (
+#     get_pre_trained_weights_path,
+#     model_trainer,
+# )
 
 
 @pipeline(name=MLFLOW_EXPERIMENT_PIPELINE_NAME)

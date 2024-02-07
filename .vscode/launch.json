@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Start run.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run.py",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/src/config/.env",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "pipeline.name=datalake"
+            ]
+        }
+    ]
+}
