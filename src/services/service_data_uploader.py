@@ -150,7 +150,7 @@ class DataUploaderService:
         self._upload_image(
             bucket_name=bucket_name,
             image_path=mask_path,
-            data=item["mask"],
+            image=item["mask"],
             metadata=metadata,
         )
 
