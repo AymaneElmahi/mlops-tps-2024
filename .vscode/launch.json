@@ -10,7 +10,7 @@
             "envFile": "${workspaceFolder}/src/config/.env",
             "cwd": "${workspaceFolder}",
             "args": [
-                "pipeline.name=datalake"
+                "pipeline.name=experiment"
             ]
         }
     ]
