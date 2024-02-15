@@ -77,7 +77,7 @@ class DataUploaderService:
         # check encoding of the dataset
         print(data_source.dataset_name)
 
-        hf_data_source = load_dataset(data_source.dataset_name, split="train[:30]")
+        hf_data_source = load_dataset(data_source.dataset_name, split="train")
 
         max_workers = 10
 
