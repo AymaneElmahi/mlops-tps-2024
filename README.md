@@ -90,7 +90,7 @@ You can now run the complete stack and register the ZenML stack:
 docker-compose up
 
 # Setup your ZenML stack
-sh stack/setup-local-stack.sh
+bash stack/setup-local-stack.sh
 ```
 
 Finally, create an `mlflow` bucket on MinIO.
