@@ -24,9 +24,14 @@ from src.steps.data.datalake_initializers import (
     data_source_list_initializer,
     minio_client_initializer,
 )
-from src.steps.data.dataset_preparators import (
-    data_source_extractor,
-    # dataset_to_yolo_converter,
+from src.steps.data.dataset_preparators import data_source_extractor
+
+from src.steps.data.dataset_to_yolo_converter import (
+    dataset_to_yolo_converter,
+)
+
+from src.steps.data.dataset_validator import (
+    dataset_validator,
 )
 
 # from src.steps.training.model_appraisers import model_appraiser
@@ -46,32 +51,20 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
         cfg: The Hydra configuration.
     """
     pipeline_config = OmegaConf.to_container(OmegaConf.create(cfg))
-    
+
     data_source_extractor(
         data_source="human_parsing_dataset",
         bucket_name=MINIO_DATA_SOURCES_BUCKET_NAME,
         extraction_path=EXTRACTED_DATASETS_PATH,
     )
 
-    # # Prepare/create the dataset
-    # dataset = dataset_creator(
-    #     data_sources=data_source_list
-    # )
+    converted_path = dataset_to_yolo_converter(
+        path_dir=EXTRACTED_DATASETS_PATH + "/human_parsing_dataset"
+    )
 
-    # Extract the dataset to a folder
-    # extraction_path = dataset_extractor(
-    #     ...
-    # )
-
-    # If necessary, convert the dataset to a YOLO format
-    # dataset_to_yolo_converter(
-    #     ...
-    # )
-
-    # Train the model
-    # trained_model_path = model_trainer(
-    #     ...
-    # )
+    validated_path = dataset_validator(
+        path_dir=converted_path
+    )
 
     # Evaluate the model
     # test_metrics_result = model_evaluator(

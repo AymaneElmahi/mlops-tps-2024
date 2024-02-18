@@ -5,12 +5,14 @@ and saving them to a local extraction path.
 
 import os
 import tqdm
+import cv2
 from minio.error import S3Error
 from minio import Minio
 
 from hydra.utils import to_absolute_path
 from zenml.logger import get_logger
 from zenml import step
+
 
 
 from src.config.settings import (
