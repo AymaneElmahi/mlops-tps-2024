@@ -167,6 +167,7 @@ cython_debug/
 local-experiment-pipeline/
 .ruff_cache/
 datasets
+images_data
 src/experiment.py
 
 # ultralytics
