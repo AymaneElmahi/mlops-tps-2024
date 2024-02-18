@@ -34,6 +34,10 @@ from src.steps.data.dataset_validator import (
     dataset_validator,
 )
 
+from src.steps.data.dataset_splitter import (
+    dataset_splitter,
+)
+
 # from src.steps.training.model_appraisers import model_appraiser
 # from src.steps.training.model_evaluators import model_evaluator
 # from src.steps.training.model_trainers import (
@@ -62,9 +66,9 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
         path_dir=EXTRACTED_DATASETS_PATH + "/human_parsing_dataset"
     )
 
-    validated_path = dataset_validator(
-        path_dir=converted_path
-    )
+    validated_path = dataset_validator(path_dir=converted_path)
+
+    custom_dataset_path = dataset_splitter(dataset_path=validated_path)
 
     # Evaluate the model
     # test_metrics_result = model_evaluator(
