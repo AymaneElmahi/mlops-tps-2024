@@ -19,7 +19,7 @@ MINIO_DATASETS_BUCKET_NAME: str = config("MINIO_DATASETS_BUCKET_NAME")
 YOLO_PRE_TRAINED_WEIGHTS_PATH: str = "ultralytics"
 EXTRACTED_DATASETS_PATH: str = "datasets"
 DATASET_YOLO_CONFIG_NAME: str = "dataset.yaml"
-YOLO_PRE_TRAINED_WEIGHTS_NAME: str = "yolov8s.pt"
+YOLO_PRE_TRAINED_WEIGHTS_NAME: str = "yolov8n-seg.pt"
 YOLO_PRE_TRAINED_WEIGHTS_URL: str = f"https://github.com/ultralytics/assets/releases/download/v8.1.0/{YOLO_PRE_TRAINED_WEIGHTS_NAME}"
 
 MLFLOW_EXPERIMENT_PIPELINE_NAME: str = "local-experiment-pipeline"

@@ -1,11 +1,13 @@
 project:
-  name: <fill-here>
+  name: mlops-aymane
 
 model:
-  key: value
+  epochs: 2
+  batch_size : 8
+  imgsz : 256
 
 evaluation:
   key: value
 
 pipeline:
-  name: <fill-here>
+  name: experiment
