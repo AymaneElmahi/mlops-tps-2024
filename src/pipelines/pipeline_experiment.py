@@ -38,12 +38,13 @@ from src.steps.data.dataset_splitter import (
     dataset_splitter,
 )
 
-# from src.steps.training.model_appraisers import model_appraiser
-# from src.steps.training.model_evaluators import model_evaluator
-# from src.steps.training.model_trainers import (
-#     get_pre_trained_weights_path,
-#     model_trainer,
-# )
+from src.steps.training.model_trainer import (
+    model_trainer,
+)
+
+from src.steps.training.model_evaluator import (
+    model_evaluator,
+)
 
 
 @pipeline(name=MLFLOW_EXPERIMENT_PIPELINE_NAME)
@@ -68,9 +69,19 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
 
     validated_path = dataset_validator(path_dir=converted_path)
 
-    custom_dataset_path = dataset_splitter(dataset_path=validated_path)
+    custom_dataset_path = dataset_splitter(dataset_path=validated_path, percentage=0.1)
 
-    # Evaluate the model
-    # test_metrics_result = model_evaluator(
-    #     ...
-    # )
+    trained_model_path = model_trainer(
+        model_path="models",
+        dataset_path=custom_dataset_path,
+        pipeline_config=pipeline_config,
+    )
+
+    metrics = model_evaluator(
+        model_path=trained_model_path,
+        dataset_path=custom_dataset_path,
+    )
+
+    print(f"Metrics: {metrics}")
+
+    print("Pipeline completed successfully!")

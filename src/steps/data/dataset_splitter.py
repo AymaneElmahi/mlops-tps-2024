@@ -21,7 +21,9 @@ def generate_config_yaml(dataset_path: str) -> None:
 
     Args:
         dataset_path: The path to the dataset folder.
+        percentage: The percentage of data to put in the custom dataset.
     """
+    
     label_map_path = os.path.join(dataset_path, "label_map.json")
 
     # Load class names from label_map.json
@@ -29,7 +31,7 @@ def generate_config_yaml(dataset_path: str) -> None:
         class_names = json.load(file)  # Directly use this as the class names mapping
 
     config_content = {
-        "path": dataset_path + "/custom_dataset",  # Relative path to dataset
+        "path": "human_parsing_dataset/custom_dataset",  # Relative path to dataset
         "train": "train/images",  # Relative path to train images
         "val": "val/images",  # Relative path to val images
         "test": "test/images",  # Relative path to test images
@@ -60,12 +62,13 @@ def generate_config_yaml(dataset_path: str) -> None:
 
 
 @step
-def dataset_splitter(dataset_path: str) -> str:
+def dataset_splitter(dataset_path: str, percentage = 1.0) -> str:
     """
     Split the dataset into train, val and test datasets, and make sure that the images and labels are in the same order, and put everything in a new folder called custom_dataset.
 
     Args:
         dataset_path: The path to the dataset folder.
+        percentage: The percentage of data to put in the custom dataset.
 
     Returns:
         The path to the new folder.
@@ -109,6 +112,11 @@ def dataset_splitter(dataset_path: str) -> str:
             if f.endswith(".txt")
         ]
     )
+    
+        # Use only a percentage of the dataset
+    dataset_size = int(len(image_files) * percentage)
+    image_files = image_files[:dataset_size]
+    label_files = label_files[:dataset_size]
 
     # Calculate the number of samples for each split
     total_samples = len(image_files)
