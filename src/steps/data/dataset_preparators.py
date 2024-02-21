@@ -14,7 +14,6 @@ from zenml.logger import get_logger
 from zenml import step
 
 
-
 from src.config.settings import (
     MINIO_DATA_SOURCES_BUCKET_NAME,
     MINIO_ENDPOINT,

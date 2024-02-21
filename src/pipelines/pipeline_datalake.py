@@ -11,7 +11,6 @@ from src.steps.data.datalake_initializers import (
 
 @pipeline
 def gitflow_datalake_pipeline(cfg: str) -> None:
-
     bucket_client = minio_client_initializer()
     bucket_name_list = bucket_name_list_initializer()
 
