@@ -24,3 +24,10 @@ YOLO_PRE_TRAINED_WEIGHTS_URL: str = f"https://github.com/ultralytics/assets/rele
 
 MLFLOW_EXPERIMENT_PIPELINE_NAME: str = "local-experiment-pipeline"
 MLFLOW_END_TO_END_PIPELINE_NAME: str = "production-end-to-end-pipeline"
+
+# define thresholds
+ACCURACY_THRESHOLD: float = 0.8
+PRECISION_THRESHOLD: float = 0.8
+RECALL_THRESHOLD: float = 0.8
+F1_THRESHOLD: float = 0.8
+AUC_THRESHOLD: float = 0.8

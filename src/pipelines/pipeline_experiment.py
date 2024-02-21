@@ -46,6 +46,10 @@ from src.steps.training.model_evaluator import (
     model_evaluator,
 )
 
+from src.steps.training.model_validator import (
+    model_validation,
+)
+
 
 @pipeline(name=MLFLOW_EXPERIMENT_PIPELINE_NAME)
 def gitflow_experiment_pipeline(cfg: str) -> None:
@@ -71,6 +75,8 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
 
     custom_dataset_path = dataset_splitter(dataset_path=validated_path, percentage=0.1)
 
+    # Due to ram problems, the trainer might get stuck
+
     trained_model_path = model_trainer(
         model_path="models",
         dataset_path=custom_dataset_path,
@@ -84,4 +90,8 @@ def gitflow_experiment_pipeline(cfg: str) -> None:
 
     print(f"Metrics: {metrics}")
 
-    print("Pipeline completed successfully!")
+    if not model_validation(metrics=metrics):
+        raise ValueError("The model is not suitable for deployment.")
+    else:
+        print("The model is suitable for deployment.")
+    print("Pipeline completed successfully.")
