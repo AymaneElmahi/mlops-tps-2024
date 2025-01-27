@@ -1,110 +1,99 @@
-# mlops-tps-2024 💪
+# Rapport de Projet MLOps : Segmentation d'Objets avec YOLO 
 
-Welcome to the 2024 MLOps course repository at TPS. This project aims to teach you how to implement:
+## Introduction
 
-- A comprehensive end-to-end MLOps pipeline. 
-- Data lake management using MinIO.
-- Pipeline orchestration with ZenML.
-- Experiment tracking with MLFlow.
-- Model deployment using Hugging Face.
+Dans le cadre de notre projet MLOps, notre équipe s'est concentrée sur le développement d'un système de segmentation d'objets, en utilisant le modèle YOLO (You Only Look Once). L'objectif principal était de créer un pipeline end-to-end automatisé pour faciliter l'entraînement, l'évaluation et le déploiement du modèle sur un dataset spécifique. Ce rapport présente notre dataset, les outils utilisés, notre pipeline MLOps, les difficultés rencontrées et les solutions apportées.
 
-Please feel free to ask questions, as this project involves numerous skills that can sometimes be challenging to master.
-
-## 1. Installation ⚙️
-### A. Python
-
-For this project, we'll be using Python 3.11:  https://www.linuxcapable.com/how-to-install-python-3-11-on-ubuntu-linux/
-
-### B. Docker
-
-Install Docker: https://docs.docker.com/engine/install/ubuntu/
-
-### C. Install your IDE
-
-We highly recommend using PyCharm (Community or Professional Edition) for this course: https://www.jetbrains.com/fr-fr/pycharm/download/other.html
+## Présentation du Dataset
 
 
-### D. Poetry
+### Description du Dataset
+Notre projet utilise le "Human Parsing Dataset", disponible sur la plateforme Hugging Face à l'adresse suivante : [Human Parsing Dataset sur Hugging Face](https://huggingface.co/datasets/mattmdjaga/human_parsing_dataset). Ce dataset est spécifiquement conçu pour les tâches de parsing humain, ce qui implique la segmentation sémantique des images pour identifier et classer différentes parties du corps humain et les vêtements.
 
-Install Poetry by following this guide:  https://medium.com/@mronakjain94/comprehensive-guide-to-installing-poetry-on-ubuntu-and-managing-python-projects-949b49ef4f76
+### Composition du Dataset
+Le dataset est composé d'images avec des annotations précises, couvrant une large variété de poses, d'actions, et de contextes environnementaux. Chaque image est accompagnée de métadonnées détaillées, incluant des masques de segmentation pour différentes catégories telles que les bras, les jambes, les vêtements, etc. Ces annotations détaillées sont essentielles pour entraîner notre modèle de détection d'objets avec précision.
 
-Then, activate the Poetry environment:
+Ce dataset comprend 17 706 paires d'images et de masques. Il s'agit simplement d'une copie du dataset Deep Human Parsing ATR. Les étiquettes des masques sont définies comme suit :
+- "0" : "Arrière-plan"
+- "1" : "Chapeau"
+- "2" : "Cheveux"
+- "3" : "Lunettes de soleil"
+- "4" : "Vêtements supérieurs"
+- "5" : "Jupe"
+- "6" : "Pantalon"
+- "7" : "Robe"
+- "8" : "Ceinture"
+- "9" : "Chaussure gauche"
+- "10" : "Chaussure droite"
+- "11" : "Visage"
+- "12" : "Jambe gauche"
+- "13" : "Jambe droite"
+- "14" : "Bras gauche"
+- "15" : "Bras droit"
+- "16" : "Sac"
+- "17" : "Écharpe"
 
-```bash
-#path/to/this/project
-poetry install
-poetry shell
-```
 
-### E. Enable black
+Voici un exemple d'image du dataset, accompagnée de son masque de segmentation :  
 
-In PyCharm settings, navigate to Black and enable the code formatter on code reformat and on save as shown below:
 
-![img.png](images/black.png)
+<p float="left">
+  <img src="images/image.jpg" width="200" style="margin-right: 200px;" />
+  <img src="images/mask.jpg" width="200" /> 
+</p>
 
-### F. Create your accounts
 
-If you haven't already, create your accounts at:
+## Présentation des Outils Utilisés dans le Pipeline MLOps
 
-- Discord: https://discord.com/register
-- GitHub: https://github.com/join
+Notre pipeline MLOps intègre une suite d'outils et de technologies essentiels pour optimiser le cycle de vie du développement des modèles de machine learning. Chaque outil joue un rôle crucial dans l'automatisation et l'efficacité du pipeline, de la gestion des données à l'évaluation des modèles.
 
-## 2. Start the stack 🚀
+### 1. **ZenML**
 
-First, go to `src/config` cand copy-paste the `.env.dist` file, rename it `.env`:
+- **Usage**: Orchestration du pipeline, gestion des workflows de machine learning, et suivi des expériences.
+- **Rôle dans le pipeline**: ZenML sert de colonne vertébrale à notre pipeline MLOps, facilitant la définition, l'exécution, et le suivi des différentes étapes du projet.
 
-```bash
-cp src/config/.env.dist src/config/.env
-```
+### 2. **MinIO**
 
-You can then fill all the `<fill-here>` tokens appropriatly, the last one (`HUGGINGFACE_TOKEN`) is a personnal access token you can [create here](https://huggingface.co/settings/tokens). It will be used when deploying our trained model on HuggingFace.
+- **Usage**: Stockage d'objets compatible S3 pour la gestion des datasets et des modèles.
+- **Rôle dans le pipeline**: Utilisé pour stocker de manière sécurisée les données d'entraînement, les datasets préparés, et les modèles entraînés, grâce à sa compatibilité avec l'écosystème S3.
 
-Now, let's start the local stack. First, we need to create the `mlflow` schema for MLflow to register our metadata store.
+### 3. **Docker**
 
-```bash
-#path/to/this/project
+- **Usage**: Conteneurisation des applications pour garantir la cohérence des environnements d'exécution.
+- **Rôle dans le pipeline**: Docker est utilisé pour encapsuler les environnements de développement et d'exécution, assurant ainsi que le pipeline MLOps fonctionne de manière identique sur tous les systèmes.
 
-# Start the mysql container
-docker-compose up mysql-db
+### 4. **MLflow**
 
-# Connect to it
-docker exec -ti mlops-tps-2024-mysql-db-1 /bin/bash
-mysql -u root -p
+- **Usage**: Suivi des expériences, gestion du cycle de vie des modèles, et orchestration des déploiements.
+- **Rôle dans le pipeline**: MLflow permet de suivre les performances des modèles, les paramètres d'entraînement, et les métriques, facilitant l'analyse et la comparaison des différentes expérimentations.
 
-# Type your root password
+### 5. **Poetry**
 
-# Create the mlflow database
-create database mlflow;
+- **Usage**: Gestion des dépendances et packaging des applications Python.
+- **Rôle dans le pipeline**: Poetry simplifie la gestion des dépendances et la construction de l'environnement nécessaire au projet, garantissant la reproductibilité des résultats.
 
-# Finally, exit mysql
-exit
+## Diagramme de Workflow du Pipeline MLOps 
 
-# And the container
-exit
-```
+Le diagramme ci-dessous illustre le workflow complet de notre pipeline MLOps, depuis la gestion des données jusqu'au déploiement du modèle. Chaque étape est orchestrée par ZenML, qui facilite la gestion des workflows de machine learning et le suivi des expériences.
 
-You can now run the complete stack and register the ZenML stack:
+![Workflow MLOps](images/diagram.png)
 
-```bash
-#path/to/this/project
-docker-compose up
+## Les Difficultés Rencontrées et Leurs Solutions
 
-# Setup your ZenML stack
-bash stack/setup-local-stack.sh
-```
+Durant le développement de notre projet MLOps axé sur la segmentation d'objets, nous avons rencontré plusieurs défis qui ont nécessité des solutions créatives et techniques. Voici comment nous avons abordé ces problèmes :
 
-Finally, create an `mlflow` bucket on MinIO.
+### Transformation des Masques en Fichiers Texte pour YOLO
 
-## 3. Quick-access URLs ⚡
+**Défi** : Notre projet, se distinguant des autres groupes par son focus sur la segmentation plutôt que sur la simple détection d'objets, nécessitait de travailler avec des masques d'image au lieu de boîtes englobantes. Cela posait un problème, car le format YOLO, principalement conçu pour la détection, n'est pas directement compatible avec des masques en nuances de gris qui représentent différentes classes.
 
-- Access ZenML Dashboard: http://localhost:8080/
-- Access MinIO S3 bucket: http://localhost:9000/
-- Access MLFlow Dashboard: http://localhost:5001/
+**Solution** : Nous avons développé une fonction spécifique pour convertir ces masques en fichiers texte compatibles avec YOLO. Cette fonction identifie les contours de chaque classe dans les masques en nuances de gris et les convertit en polygones. Ces polygones sont ensuite transformés en coordonnées normalisées, s'adaptant ainsi au format d'entrée requis par YOLO. Cela a permis au modèle de comprendre et d'apprendre à partir des données de segmentation.
 
-## 4. Additional materials 📖
+### Problèmes de RAM Sous WSL
 
-Various tools are used to construct this pipeline. Here are some resources for further reading:
+**Défi** : Un des obstacles majeurs rencontrés a été la limitation de la RAM lors de l'exécution du modèle. Notre projet a été développé en utilisant le sous-système Windows pour Linux (WSL), qui offre certes une grande flexibilité pour le développement sous Windows, mais peut parfois être limité en termes de ressources système disponibles, en particulier la mémoire RAM.
 
-- ZenML: https://docs.zenml.io/getting-started/introduction (watch out, use the up-to-date documentation)
-- MLFlow documentation: https://mlflow.org/docs/latest/index.html
-- For any questions, feel free to reach out to me on Discord or via email at [contact@alexis-schutzger.com](mailto:contact@alexis-schutzger.com).
+**Solution** : Nous avons essayé de diminuer la taille du dataset mais cela n'a pas changé grand chose. Nous avons quand même implémenté le code pour que le programme puisse tourner sur des machines qui ont une RAM plus grande.
+
+## Conclusion
+
+Notre projet MLOps a été une expérience enrichissante, nous permettant de mettre en pratique les concepts et les outils appris tout au long du cours. Nous avons réussi à développer une pipeline MLOps complète pour la segmentation d'objets, en utilisant le modèle YOLO, et à surmonter les défis techniques rencontrés. Ce projet nous a permis de mieux comprendre les enjeux de l'automatisation des workflows de machine learning, et de développer des compétences pratiques en matière de gestion des données, de suivi des expériences, et de déploiement de modèles. Nous sommes fiers du résultat final et des compétences acquises, et nous sommes impatients de poursuivre notre apprentissage dans le domaine du MLOps.
